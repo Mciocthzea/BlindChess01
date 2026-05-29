@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Trainer</title>
+  <!-- NOTE: Run via a local HTTP server (e.g. VS Code Live Server) for Stockfish to load correctly -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <header id="header">
+      <h1>Chess Trainer</h1>
+      <div id="header-controls">
+        <select id="select-color">
+          <option value="w">Play as White</option>
+          <option value="b">Play as Black</option>
+          <option value="r">Random</option>
+        </select>
+        <button id="btn-new-game">New Game</button>
+      </div>
+    </header>
+
+    <main id="main">
+
+      <!-- Left: controls -->
+      <aside id="controls-panel">
+
+        <section class="control-group">
+          <label class="group-label">Engine Strength</label>
+          <div class="slider-row">
+            <input type="range" id="strength-slider" min="0" max="20" value="10">
+            <span id="strength-value">10</span>
+          </div>
+          <div class="slider-ticks">
+            <span>0</span><span>10</span><span>20</span>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <label class="group-label">Vision Mode</label>
+          <div id="vision-modes">
+            <button class="mode-btn active" data-mode="full">Full</button>
+            <button class="mode-btn" data-mode="ghost">Ghost</button>
+            <button class="mode-btn" data-mode="partial">Partial</button>
+            <button class="mode-btn" data-mode="reveal">Reveal</button>
+          </div>
+        </section>
+
+        <section class="control-group sub-option" id="partial-options">
+          <label class="group-label">Hide pieces</label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="hide-mine" checked> My pieces
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="hide-opponent"> Opponent pieces
+          </label>
+        </section>
+
+        <section class="control-group sub-option" id="reveal-options">
+          <label class="group-label">Reveal duration</label>
+          <div class="slider-row">
+            <input type="number" id="reveal-duration" min="0.1" max="10" value="1" step="0.1">
+            <span>s</span>
+          </div>
+        </section>
+
+        <section class="control-group" id="status-group">
+          <label class="group-label">Status</label>
+          <div id="status-text">Press "New Game" to start</div>
+          <div id="turn-indicator"></div>
+          <button id="btn-review-game" style="display:none; margin-top:8px;">Review Game</button>
+        </section>
+
+      </aside>
+
+      <!-- Center: board -->
+      <div id="board-container">
+        <div id="board"></div>
+      </div>
+
+      <!-- Right: moves + review -->
+      <aside id="moves-panel">
+
+        <div id="moves-header">
+          <h3>Moves</h3>
+        </div>
+
+        <div id="move-list"></div>
+
+        <div id="review-controls" style="display:none">
+          <button id="btn-prev" title="Previous move">&#9664;</button>
+          <span id="review-position">0 / 0</span>
+          <button id="btn-next" title="Next move">&#9654;</button>
+        </div>
+
+        <div id="drill-section" style="display:none">
+          <button id="btn-drill">Drill this position</button>
+          <div id="drill-status"></div>
+        </div>
+
+        <div id="analysis-section" style="display:none">
+          <div class="group-label" style="margin-bottom:4px">Analysis</div>
+          <div id="analysis-progress"></div>
+        </div>
+
+      </aside>
+
+    </main>
+
+    <footer id="footer">
+      <span id="footer-status">Initialising...</span>
+    </footer>
+
+  </div>
+
+  <!-- Floating piece during drag -->
+  <div id="drag-ghost"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
