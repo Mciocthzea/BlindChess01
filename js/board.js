@@ -52,6 +52,7 @@ class ChessBoard {
 
     this._build();
     this._attachDrag();
+    this._attachResize();
   }
 
   // ── Build 64 squares ────────────────────────────────────────────
@@ -218,6 +219,25 @@ class ChessBoard {
     this.el.addEventListener('mousedown', e => this._onDown(e));
     window.addEventListener('mousemove', e => this._onMove(e));
     window.addEventListener('mouseup',   e => this._onUp(e));
+
+    // Touch support
+    this.el.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const t = e.touches[0];
+      this._onDown({ clientX: t.clientX, clientY: t.clientY, preventDefault() {} });
+    }, { passive: false });
+
+    window.addEventListener('touchmove', e => {
+      if (!this._dragging) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      this._onMove({ clientX: t.clientX, clientY: t.clientY });
+    }, { passive: false });
+
+    window.addEventListener('touchend', e => {
+      const t = e.changedTouches[0];
+      this._onUp({ clientX: t.clientX, clientY: t.clientY });
+    });
   }
 
   _squareIdxAt(clientX, clientY) {
@@ -280,5 +300,38 @@ class ChessBoard {
     this.flipped = flipped;
     this._build();
     this._attachDrag();
+  }
+
+  // ── Corner resize handle ─────────────────────────────────────────
+  _attachResize() {
+    const handle = document.getElementById('board-resize-handle');
+    if (!handle) return;
+
+    let resizing = false;
+    let startX, startY, startSize;
+
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      resizing = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startSize = this.el.offsetWidth;
+      document.body.classList.add('board-resizing');
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!resizing) return;
+      const delta = ((e.clientX - startX) + (e.clientY - startY)) / 2;
+      const newSize = Math.max(200, Math.min(900, startSize + delta));
+      this.el.style.width  = newSize + 'px';
+      this.el.style.height = newSize + 'px';
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!resizing) return;
+      resizing = false;
+      document.body.classList.remove('board-resizing');
+    });
   }
 }
