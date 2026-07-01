@@ -204,6 +204,7 @@ body.board-resizing * { cursor: nwse-resize !important; }
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: none;
 }
 
 .square.light { background: var(--sq-light); }
